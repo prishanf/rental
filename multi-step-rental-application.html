@@ -1552,14 +1552,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize step indicators
     initializeStepIndicators();
     
-    // Load saved progress (with delay)
+    // Load saved progress (with delay), then apply URL property address if present
     setTimeout(() => {
         loadProgress();
+        applyPropertyAddressFromQuery();
     }, 100);
     
     // Auto-save on input
     setupAutoSave();
 });
+
+// Prefill Property Address Applying For from ?address= (or ?property_address= / ?property=)
+function applyPropertyAddressFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const address =
+        params.get('address') ||
+        params.get('property_address') ||
+        params.get('property');
+
+    if (!address) return;
+
+    const field = document.getElementById('property_address');
+    if (!field) return;
+
+    field.value = address.trim();
+    // Persist so progress save keeps the linked property
+    saveProgress();
+}
 
 // Initialize step indicators
 function initializeStepIndicators() {
